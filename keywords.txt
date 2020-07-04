@@ -1,0 +1,30 @@
+#######################################
+# Syntax Coloring Map For CH_HID_Arduino
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ch_hid   	KEYWORD1
+Keyboard	KEYWORD1
+Mouse    	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+click	KEYWORD2
+move	KEYWORD2
+press	KEYWORD2
+release	KEYWORD2
+isPressed KEYWORD2
+write	KEYWORD2
+releaseAll	KEYWORD2
+reset	KEYWORD2
+bootloader	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
