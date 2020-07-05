@@ -17,8 +17,11 @@ Then open the "CH552_Interface" Example and click on upload to flash it to the C
 ### You can support my work via paypal: https://paypal.me/hoverboard1 this keeps projects like this comming.
 
 For more information about this library please visit
+
 https://github.com/atc1441/CH_HID_Arduino
+
 http://www.arduino.cc/en/Reference/Mouse
+
 http://www.arduino.cc/en/Reference/Keyboard
 
 == License from the Keyboard.h and Mouse.h these files have been integrated to work with the CH552 Interface ==
