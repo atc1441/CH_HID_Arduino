@@ -2,7 +2,7 @@
 
 void setup() {
 
-  ch_hid.begin(/*Reset CH*/6);
+  ch_hid.begin(/*Reset CH*/6);//Reset pin is not needed and can be left out, this is to put the CH in an known state.
 
   Keyboard.print("Hallo");
   delay(1000);
