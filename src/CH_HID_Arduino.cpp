@@ -23,22 +23,27 @@
 #include "CH_HID_Arduino.h"
 
 #define USB_WAITING 60
+
 //================================================================================
 //================================================================================
 //  CH552 raw stuff
 
-void CH_HID_::begin(int8_t _reset_ch_pin)
+void CH_HID_::begin(Stream *serialPort, int8_t _reset_ch_pin)
 {
-  if(_reset_ch_pin >= 0){
-  pinMode(_reset_ch_pin,OUTPUT);
-  digitalWrite(_reset_ch_pin,HIGH);
-  delay(400);
-  digitalWrite(_reset_ch_pin,LOW);
-  delay(500);
+  _serialPort = serialPort;
+  if (_reset_ch_pin >= 0) {
+    pinMode(_reset_ch_pin, OUTPUT);
+    digitalWrite(_reset_ch_pin, HIGH);
+    delay(400);
+    digitalWrite(_reset_ch_pin, LOW);
+    delay(500);
   }
-  Serial.begin(57600);
   delay(100);
   sync();// send one time sign to discard uart garbage
+}
+
+void CH_HID_::send_one_byte(unsigned char send_data) {
+  _serialPort->write(send_data);
 }
 
 void CH_HID_::sync()
@@ -48,25 +53,32 @@ void CH_HID_::sync()
 
 void CH_HID_::reset()
 {
-  Serial.print("Reset");
+  send_one_byte('R');
+  send_one_byte('e');
+  send_one_byte('s');
+  send_one_byte('e');
+  send_one_byte('t');
   send_sign();
 }
 
 void CH_HID_::bootloader()
 {
-  Serial.print("Boot");
+  send_one_byte('B');
+  send_one_byte('o');
+  send_one_byte('o');
+  send_one_byte('t');
   send_sign();
 }
 
 void CH_HID_::send_sign() {
-  Serial.write('A');// Signature
-  Serial.write('T');// Signature
-  Serial.write('C');// Signature
-  Serial.write('\r');// reset line
-  Serial.write('\n');// new line
+  send_one_byte('A');// Signature
+  send_one_byte('T');// Signature
+  send_one_byte('C');// Signature
+  send_one_byte('\r');// reset line
+  send_one_byte('\n');// new line
   delay(5);
 }
-	
+
 CH_HID_ ch_hid;
 
 //================================================================================
@@ -75,33 +87,33 @@ CH_HID_ ch_hid;
 
 void Mouse_::click(uint8_t b)
 {
-  Serial.write('M');// M for mouse
-  Serial.write(0x11);// click and release
-  Serial.write(b);// mouse buttons bit whise
-  Serial.write(0);// X Axis signed int8
-  Serial.write(0);// Y Axis signed int8
-  Serial.write(0);// Mouse Wheel signed int8
-  Serial.write('A');// Signature
-  Serial.write('T');// Signature
-  Serial.write('C');// Signature
-  Serial.write('\r');// reset line
-  Serial.write('\n');// new line
+  ch_hid.send_one_byte('M');// M for mouse
+  ch_hid.send_one_byte(0x11);// click and release
+  ch_hid.send_one_byte(b);// mouse buttons bit whise
+  ch_hid.send_one_byte(0);// X Axis signed int8
+  ch_hid.send_one_byte(0);// Y Axis signed int8
+  ch_hid.send_one_byte(0);// Mouse Wheel signed int8
+  ch_hid.send_one_byte('A');// Signature
+  ch_hid.send_one_byte('T');// Signature
+  ch_hid.send_one_byte('C');// Signature
+  ch_hid.send_one_byte('\r');// reset line
+  ch_hid.send_one_byte('\n');// new line
   delay(USB_WAITING);
 }
 
 void Mouse_::move(signed char x, signed char y, signed char wheel)
 {
-  Serial.write('M');// M for mouse
-  Serial.write(0x00);// click and hold
-  Serial.write(_buttons);// mouse buttons bit whise
-  Serial.write(x);// X Axis signed int8
-  Serial.write(y);// Y Axis signed int8
-  Serial.write(wheel);// Mouse Wheel signed int8
-  Serial.write('A');// Signature
-  Serial.write('T');// Signature
-  Serial.write('C');// Signature
-  Serial.write('\r');// reset line
-  Serial.write('\n');// new line
+  ch_hid.send_one_byte('M');// M for mouse
+  ch_hid.send_one_byte(0x00);// click and hold
+  ch_hid.send_one_byte(_buttons);// mouse buttons bit whise
+  ch_hid.send_one_byte(x);// X Axis signed int8
+  ch_hid.send_one_byte(y);// Y Axis signed int8
+  ch_hid.send_one_byte(wheel);// Mouse Wheel signed int8
+  ch_hid.send_one_byte('A');// Signature
+  ch_hid.send_one_byte('T');// Signature
+  ch_hid.send_one_byte('C');// Signature
+  ch_hid.send_one_byte('\r');// reset line
+  ch_hid.send_one_byte('\n');// new line
   delay(USB_WAITING);
 }
 
@@ -110,11 +122,11 @@ void Mouse_::buttons(uint8_t b)
   if (b != _buttons)
   {
     _buttons = b;
-    move(0,0,0);
+    move(0, 0, 0);
   }
 }
 
-void Mouse_::press(uint8_t b) 
+void Mouse_::press(uint8_t b)
 {
   buttons(_buttons | b);
 }
@@ -126,7 +138,7 @@ void Mouse_::release(uint8_t b)
 
 bool Mouse_::isPressed(uint8_t b)
 {
-  if ((b & _buttons) > 0) 
+  if ((b & _buttons) > 0)
     return true;
   return false;
 }
@@ -139,21 +151,21 @@ Mouse_ Mouse;
 
 void Keyboard_::sendReport(KeyReport* keys, bool with_release)
 {
-  Serial.write('K');// K for keyboard
-  Serial.write((with_release ? 0x11 : 0x00));// click and release or clicked and hold
-  Serial.write(keys->modifiers);
-  Serial.write(0x00);
-  Serial.write(keys->keys[0]);
-  Serial.write(keys->keys[1]);
-  Serial.write(keys->keys[2]);
-  Serial.write(keys->keys[3]);
-  Serial.write(keys->keys[4]);
-  Serial.write(keys->keys[5]);
-  Serial.write('A');// Signature
-  Serial.write('T');// Signature
-  Serial.write('C');// Signature
-  Serial.write('\r');// reset line
-  Serial.write('\n');// new line
+  ch_hid.send_one_byte('K');// K for keyboard
+  ch_hid.send_one_byte((with_release ? 0x11 : 0x00));// click and release or clicked and hold
+  ch_hid.send_one_byte(keys->modifiers);
+  ch_hid.send_one_byte(0x00);
+  ch_hid.send_one_byte(keys->keys[0]);
+  ch_hid.send_one_byte(keys->keys[1]);
+  ch_hid.send_one_byte(keys->keys[2]);
+  ch_hid.send_one_byte(keys->keys[3]);
+  ch_hid.send_one_byte(keys->keys[4]);
+  ch_hid.send_one_byte(keys->keys[5]);
+  ch_hid.send_one_byte('A');// Signature
+  ch_hid.send_one_byte('T');// Signature
+  ch_hid.send_one_byte('C');// Signature
+  ch_hid.send_one_byte('\r');// reset line
+  ch_hid.send_one_byte('\n');// new line
   delay(USB_WAITING);
 }
 

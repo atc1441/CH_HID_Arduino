@@ -1,27 +1,20 @@
-## CH552 USB HID, Mouse and Keyboard Library for Arduino
+= CH552 USB HID, Mouse and Keyboard Library for Arduino =
 
 This library allows an Arduino board with CH552 as interface to act as a USB Mouse and Keyboard.
-
 
 
 To prepare the CH552 use the CH55xDuino library, install it by placing this link under your preferences in the Arduino IDE(Windows only for now)
 https://raw.githubusercontent.com/atc1441/atc1441.github.io/master/package_ch55xduino_index.json
 and install the CH55xDuino library via the Boards Manager.
 
-
-Use the Zadig tool( https://zadig.akeo.ie/ ) to install the libusb-win32 driver for the CH55x in Bootloader mode to make it accessable via Arduino. 
-
+Use the Zadig tool to install the libusb-win32 driver for the CH55x in Bootloader mode to make it accessable via Arduino. 
 
 Then open the "CH552_Interface" Example and click on upload to flash it to the CH55x connected via usb.
 
-### You can support my work via paypal: https://paypal.me/hoverboard1 this keeps projects like this comming.
 
 For more information about this library please visit
-
 https://github.com/atc1441/CH_HID_Arduino
-
 http://www.arduino.cc/en/Reference/Mouse
-
 http://www.arduino.cc/en/Reference/Keyboard
 
 == License from the Keyboard.h and Mouse.h these files have been integrated to work with the CH552 Interface ==

@@ -20,7 +20,6 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
 #ifndef CH_HID_h
 #define CH_HID_h
 
@@ -34,8 +33,10 @@ class CH_HID_
 {
   private:
     void send_sign();
+    Stream *_serialPort;
   public:
-    void begin(int8_t _reset_ch_pin = -1);
+    void begin(Stream *serialPort = &Serial, int8_t _reset_ch_pin = -1);
+    void send_one_byte(unsigned char send_data);
     void sync();
     void reset();
     void bootloader();
@@ -53,15 +54,15 @@ extern CH_HID_ ch_hid;
 
 class Mouse_
 {
-private:
-  uint8_t _buttons;
-  void buttons(uint8_t b);
-public:
-  void click(uint8_t b = MOUSE_LEFT);
-  void move(signed char x, signed char y, signed char wheel = 0); 
-  void press(uint8_t b = MOUSE_LEFT);   // press LEFT by default
-  void release(uint8_t b = MOUSE_LEFT); // release LEFT by default
-  bool isPressed(uint8_t b = MOUSE_LEFT); // check LEFT by default
+  private:
+    uint8_t _buttons;
+    void buttons(uint8_t b);
+  public:
+    void click(uint8_t b = MOUSE_LEFT);
+    void move(signed char x, signed char y, signed char wheel = 0);
+    void press(uint8_t b = MOUSE_LEFT);   // press LEFT by default
+    void release(uint8_t b = MOUSE_LEFT); // release LEFT by default
+    bool isPressed(uint8_t b = MOUSE_LEFT); // check LEFT by default
 };
 extern Mouse_ Mouse;
 

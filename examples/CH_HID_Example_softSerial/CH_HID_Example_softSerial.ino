@@ -1,12 +1,15 @@
 
 #include "CH_HID_Arduino.h"
+#include <SoftwareSerial.h>
+
+SoftwareSerial softSerial(/*RX*/4, /*TX*/5);
 
 #define CH_RESET_PIN 6
 
 void setup() {
 
-  Serial.begin(57600);
-  ch_hid.begin(&Serial, CH_RESET_PIN);//Both args not needed, will default to Serial and no CH55x reset
+  softSerial.begin(57600);
+  ch_hid.begin(&softSerial, CH_RESET_PIN);//Both args not needed, will default to Serial and no CH55x reset
 
   Keyboard.print("Hallo");
   
