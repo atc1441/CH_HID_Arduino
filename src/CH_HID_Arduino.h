@@ -35,7 +35,7 @@ class CH_HID_
   private:
     void send_sign();
   public:
-    void begin();
+    void begin(int8_t _reset_ch_pin = -1);
     void sync();
     void reset();
     void bootloader();

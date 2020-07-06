@@ -22,12 +22,20 @@
 
 #include "CH_HID_Arduino.h"
 
+#define USB_WAITING 60
 //================================================================================
 //================================================================================
 //  CH552 raw stuff
 
-void CH_HID_::begin()
+void CH_HID_::begin(int8_t _reset_ch_pin)
 {
+  if(_reset_ch_pin >= 0){
+  pinMode(_reset_ch_pin,OUTPUT);
+  digitalWrite(_reset_ch_pin,HIGH);
+  delay(400);
+  digitalWrite(_reset_ch_pin,LOW);
+  delay(500);
+  }
   Serial.begin(57600);
   delay(100);
   sync();// send one time sign to discard uart garbage
@@ -78,7 +86,7 @@ void Mouse_::click(uint8_t b)
   Serial.write('C');// Signature
   Serial.write('\r');// reset line
   Serial.write('\n');// new line
-  delay(30);
+  delay(USB_WAITING);
 }
 
 void Mouse_::move(signed char x, signed char y, signed char wheel)
@@ -94,7 +102,7 @@ void Mouse_::move(signed char x, signed char y, signed char wheel)
   Serial.write('C');// Signature
   Serial.write('\r');// reset line
   Serial.write('\n');// new line
-  delay(30);
+  delay(USB_WAITING);
 }
 
 void Mouse_::buttons(uint8_t b)
@@ -146,7 +154,7 @@ void Keyboard_::sendReport(KeyReport* keys, bool with_release)
   Serial.write('C');// Signature
   Serial.write('\r');// reset line
   Serial.write('\n');// new line
-  delay(30);
+  delay(USB_WAITING);
 }
 
 extern
