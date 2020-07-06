@@ -2,7 +2,7 @@
 
 void setup() {
 
-  ch_hid.begin();
+  ch_hid.begin(/*Reset CH*/6);
 
   Keyboard.print("Hallo");
   delay(1000);
